@@ -5,6 +5,7 @@ $PSA1#: python PutObject.py -h
 Usage: beiwo.py [options]
 
 Options:
+
   -h, --help  show this help message and exit
   -i AK       Must fill in Accesskey          访问云产品的 Accesskey
   -k SK       Must fill in AccessKeySecrety   访问云产品的 Accesskey Secret
