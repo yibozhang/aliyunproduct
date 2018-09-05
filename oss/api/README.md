@@ -14,7 +14,7 @@
       -o OBJECTS  File name uploaded to oss       上传的 object 名称
       -f FI       Must fill localfile path        本地文件的名称
 
-    . 客观想要玩的 安全，可以加个外套 Content-MD5，但是不注意的人就会忘记加了，补充如下：根据协议 RFC 1864 对消息内容（不包括头部）计算 MD5 值获得 128 比特位数字，对该数字进行 base64 编码为一个消息的 Content-MD5 值，并且 MD5 是 大写 哦。
+    . 客观想要玩的 `安全`，可以加个`外套 Content-MD5`，但是不注意的人就会忘记加了，补充如下：根据协议 RFC 1864 对消息内容（不包括头部）计算 MD5 值获得 128 比特位数字，对该数字进行 `base64` 编码为一个消息的 Content-MD5 值，并且 `MD5` 是 `大写` 哦。
 
     . 如果客观想要单独加项目 CanonicalizedOSSHeaders 一定要记得不仅在 Header 中加，你的 hmac 计算时也要加，来个板 “例” Content-Type 一定要在 hmac 计算中
      hmac.new("5Lic5Lqs5LiA54K56YO95LiN54Ot","PUT\n\napplication/x-www-form-urlencoded\nSun, 02 Sep 2018 03:20:05 GMT\nx-oss-video:tokhot.avi/zhangyibo/tokhot.avi", sha)
