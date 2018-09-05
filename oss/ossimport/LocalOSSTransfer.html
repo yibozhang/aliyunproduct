@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+ <head> 
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" /> 
+  <title>{{ title }}</title> 
+  <style>  
+   
+body{  
+    font-size:12px;  
+    font-family:"宋体";}
+
+.bule{   
+border-color:#ABFEFE;}  
+
+.font1{  
+    color:#666;}  
+
+  </style> 
+  <script>
+function getElements(formId) {  
+  var form = document.getElementById(formId);  
+  var elements = new Array();  
+  var tagElements = form.getElementsByTagName('input');  
+  for (var j = 0; j < tagElements.length; j++){ 
+     elements.push(tagElements[j]); 
+  
+  } 
+  return elements;  
+}  
+  
+function inputSelector(element) {  
+ if (element.checked)  
+   return [element.name, element.value];  
+}  
+    
+function input(element) {  
+  switch (element.type.toLowerCase()) {  
+   case 'password':  
+   case 'text':  
+    return [element.name, element.value];  
+   case 'radio':  
+    return inputSelector(element);  
+  }  
+  return false;  
+}  
+  
+function serializeElement(element) {  
+  var method = element.tagName.toLowerCase();  
+  var parameter = input(element);  
+   
+  if (parameter) {  
+   var key = encodeURIComponent(parameter[0]);  
+   if (key.length == 0) return;  
+   
+   if (parameter[1].constructor != Array)  
+    parameter[1] = [parameter[1]];  
+      
+   var values = parameter[1];  
+   var results = [];  
+   for (var i=0; i<values.length; i++) {  
+    results.push(key + '=' + encodeURIComponent(values[i]));  
+   }  
+   return results.join('&');  
+  }  
+ }  
+  
+function serializeForm(formId) {  
+  var elements = getElements(formId);  
+  var queryComponents = new Array();  
+   
+  for (var i = 0; i < elements.length; i++) {  
+   var queryComponent = serializeElement(elements[i]);  
+   if (queryComponent)  
+    queryComponents.push(queryComponent);  
+  }  
+   
+  return queryComponents.join('&'); 
+}  
+
+function subForm(){
+  var params = serializeForm('GetData'); 
+  document.getElementById('xiaomin').value = params;
+  var RES = document.getElementById('GetData').submit();
+}
+
+  </script>
+
+ </head> 
+ <body> 
+  <table width="1400" height="29" border="0" align="left"> 
+   <tbody>
+    <tr> 
+     <td width="80" height="29"><img src="static/p1.png" height="29" border="0" /></td> 
+     <td bgcolor="#B9EDF7"><b>OSS 数据迁移工具 /* 主要用于生成数据迁移的配置文件，提高用户的迁移效率*/</b></td> 
+    </tr> 
+   </tbody>
+  </table> 
+  <br />
+  <br /> 
+  <form id="GetData"  action="/localtransfer" enctype="multipart/form-data" method="post">
+   <br />
+   <table width="800" border="0" align="center" style="border-collapse:separate; border-spacing:0px 10px;"> 
+    <tbody>
+     <tr> 
+      <td><b>srcType： </b></td> 
+      <td> <input type="text" name="srcType" size="20" class="bule" value="{{ model }}" />&nbsp;&nbsp;同步源类型</td> 
+     </tr> 
+     <tr> 
+      <td><b>srcPrefix：</b></td> 
+      <td colspan="2"> <input type="text" name="srcPrefix" size="20" class="bule" value="location"/>&nbsp;&nbsp;指定迁移的目录路径(例: /home/admin/example/) </td>
+     </tr> 
+     <tr> 
+      <td><b>destAccessKey：</b></td> 
+      <td colspan="2"> <input type="password" name="destAccessKey" size="20" class="bule" value="vdestsk"/>&nbsp;&nbsp;目的 access key </td> 
+     </tr> 
+     <tr> 
+      <td><b>destSecretKey：</b></td> 
+      <td colspan="2"> <input type="password" name="destSecretKey" size="20" class="bule" value="vdestak"/>&nbsp;&nbsp;目的 secret key </td> 
+     </tr>  
+     <tr> 
+      <td><b>destDomain：</b></td> 
+      <td colspan="2"> <input type="text" name="destDomain" size="20" class="bule" value="vdomain"/>&nbsp;&nbsp;目的 endpoint（如果 ECS 和 OSS 是同 region 可以使用内网域名，既快又不计费） </td> 
+     </tr> 
+     <tr> 
+      <td><b>destBucket：</b></td> 
+      <td colspan="2"> <input type="text" name="destBucket" size="20" class="bule" value="vbucket"/>&nbsp;&nbsp;目的bucket，不需要加上&quot;/&quot; </td> 
+     </tr> 
+     <tr> 
+      <td><b>迁移机器数量：</b></td> 
+      <td colspan="2"> <input type="text" name="ecsnum" size="20" class="bule" value="15"/>&nbsp;&nbsp;单机迁移不需要填写，否则影响迁移 例：10 </td> 
+     </tr> 
+     <tr> 
+      <td><b>迁移文件数量：</b></td> 
+      <td colspan="2"> <input type="text" name="filenum" size="20" class="bule" value="10"/>&nbsp;&nbsp;实际迁移源文件数量，例：10000000</td> 
+     </tr> 
+     <tr> 
+      <td><b>迁移数据量：</b></td> 
+      <td colspan="2"> <input type="text" name="storesize" size="20" class="bule" value="{{ size }}"/>&nbsp;&nbsp;</td> 
+     </tr> 
+     <tr> 
+      <td><b>迁移机器配置选型：</b></td> 
+      <td colspan="10"> <input type="radio" name="ecs" value="LD" />4核8G以下 <input type="radio" name="ecs" value="MD" />8核16G以下 <input type="radio" name="ecs" value="HD" />16核64G以下 <input type="radio" name="ecs" value="SD" />32核128以下 <input type="radio" name="ecs" value="TD" />32核128以上 </td> 
+     </tr> 
+     <input type="hidden" name="xiaomin" id="xiaomin" value="">
+     <tr> 
+      <td colspan="3" align="center"><input id="Produce" type="submit" value="submit" onclick="subForm();"/></td> 
+     </tr> 
+    </tbody>
+   </table> 
+  </form>   
+
+ </body>
+</html>

@@ -1,0 +1,111 @@
+<html>
+<head>
+    <title>{{ title }}</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>  
+
+    <style type="text/css">
+    body{  
+    font-size:12px;  
+    font-family:"宋体";}
+
+   .bule{   
+   border-color:#ABFEFE;}  
+   
+   .font1{  
+       color:#666;} 
+    </style>
+
+</head>
+<body>
+  <table width="1000" height="29" border="0" align="center"> 
+
+   <tbody>
+    <tr> 
+     <td width="80" height="29"><img src="static/p1.png" height="29" border="0" /></td> 
+     <td bgcolor="#B9EDF7"><b>{{ title }}</b></td> 
+    </tr> 
+   </tbody>
+  </table> 
+  <br />
+  <br />
+
+<form enctype="multipart/form-data">
+<br />
+   <table width="850" border="0" align="center" style="border-collapse:separate; border-spacing:0px 10px;"> 
+    <tbody>
+     <tr> 
+     <td><b>公网 IP：</b></td> 
+     <td> <input type="text" id="IP" size="20" class="bule" placeholder="填入你机器 IP"/>&nbsp;&nbsp;</td> 
+     </tr> 
+
+     <tr> 
+     <td><b>Port：</b></td> 
+     <td colspan="2"> <input type="text" id="Port" size="20" class="bule" placeholder="填入你机器的端口"/></td>
+     </tr> 
+
+     <tr> 
+     <td><b>Password：</b></td> 
+     <td colspan="2"> <input type="password" id="passwd" size="20" class="bule" value=""/></td> 
+     </tr>
+
+     <tr> 
+     <td><b>UserName ：</b></td> 
+     <td colspan="2"> <input type="text" id="username" size="20" class="bule" value="root"/></td> 
+     </tr>
+
+     <tr> 
+     <td><b>cfg：</b></td> 
+     <td colspan="2"> <input type="text" id="cfg" size="20" class="bule" value="{{ cfg }}"/></td> 
+     </tr> 
+	 
+     <tr> 
+     <td><b>sys.properties：</b></td> 
+     <td colspan="2"> <input type="text" id="sys" size="20" class="bule" value="{{ sys }}"/></td> 
+     </tr> 
+
+     <tr> 
+     <td colspan="3" align="center"><input id="DEPLOY" type="submit" value="部署主机" /></td> 
+     </tr> 
+
+     <input type="hidden" id="model" value="{{ model }}">
+
+    </tbody>
+   </table> 
+
+</form>
+
+    <script type="text/javascript">
+        $("#DEPLOY").click(function()
+        {
+          var ip = $("#IP").val();
+          var port = $("#Port").val();
+          var passwd = $("#passwd").val();
+          var username = $("#username").val();
+          var cfg = $("#cfg").val();
+          var sys = $("#sys").val();
+          var model = $("#model").val();
+          var DATA = {"ip":ip,"port":port,"passwd":passwd,"username":username,"cfg":cfg,"sys":sys,"model":model}
+
+          $.ajax({
+              type:"post",
+              url:"/sship",
+              data:DATA,
+              cache:false,
+              success:function(data,status){
+                  if(data == "successed"){
+                    alert(data);
+                    window.location.href='/ossimport';
+                  }
+                  else{
+                    alert(data); 
+                    window.location.href='/ossimport';
+                  }
+              },
+          });
+
+        });
+    
+    </script>
+</body>
+</html>

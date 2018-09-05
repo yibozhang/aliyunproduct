@@ -1,0 +1,100 @@
+<html>
+<head>
+    <title>{{ title }}</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>  
+
+    <style type="text/css">
+    body{  
+    font-size:12px;  
+    font-family:"宋体";}
+
+   .bule{   
+   border-color:#ABFEFE;}  
+   
+   .font1{  
+       color:#666;} 
+    </style>
+
+</head>
+<body>
+  <table width="1000" height="29" border="0" align="center"> 
+
+   <tbody>
+    <tr> 
+     <td width="80" height="29"><img src="static/p1.png" height="29" border="0" /></td> 
+     <td bgcolor="#B9EDF7"><b>{{ title }}</b></td> 
+    </tr> 
+   </tbody>
+  </table> 
+  <br />
+  <br />
+
+<form enctype="multipart/form-data">
+<br />
+   <table width="850" border="0" align="center" style="border-collapse:separate; border-spacing:0px 10px;"> 
+    <tbody>
+     <tr> 
+     <td><b>迁移类型：</b>
+         <select size="1" id="style">
+           <option value="local">localfile-to-oss</option>
+           <option value="http">httpurl-to-oss</option>
+           <option value="cloud">cloud-to-oss</option>
+         </select>
+     </td> 
+     </tr> 
+     <tr> 
+     <td><b>迁移数据量：</b>
+         <select size="1" id="store">
+           <option value="more">大于30TB</option>
+           <option value="less">小于30TB</option>
+         </select>&nbsp&nbsp选择正确的数据量否则影响迁移配置
+     </td> 
+     </tr> 
+     <tr> 
+     <td colspan="3" align="center"><input id="base" type="submit" value="submit" /></td> 
+     </tr> 
+    <tr colspan="3">
+    <td>
+    /*迁移类型说明*/<br>
+    <h4>local-to-oss：本地文件迁移到 OSS<br></h4>
+    <h4>cloud-to-oss：第三方云存储迁移到 OSS<br></h4>
+    <li>OSS</li>
+    <li>qiniu(七牛)</li>
+    <li>bos(百度的云存储)</li>
+    <li>ks3(金山的云存储)</li>
+    <li>s3(亚马逊s3)</li>
+    <li>youpai(又拍云)</li>
+    <li>cos(腾讯云)</li>
+    <li>azure(微软blob)</li>
+    <h4>httpurl-to-oss：通过 URL 的方式迁移到 OSS<br></h4>
+    <li>通过 URL 的方式进行迁移，httplist 列表格式按照 domain/prefix aa/test.jpg</li>
+    </td>
+    </tr>
+    </tbody>
+   </table> 
+
+</form>
+<script type="text/javascript">
+  $("#base").click(function()
+    {
+      var style = $("#style").val();
+      var store = $("#store").val();
+      var datas = { "style":style, "store":store };
+      $.ajax({
+        type:"post",
+        url:"/ossbase",
+        data:datas,
+        cache:false,
+        success:function(data,status){
+          if(data != "error"){
+            window.location.href='/getconfig?'+data;  
+          }else{
+            alert("Get Selected Args Error,Call hanli");
+          }
+    },
+});
+});
+</script>
+</body>
+</html>

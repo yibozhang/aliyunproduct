@@ -1,0 +1,191 @@
+<html>
+<head>
+    <title>{{ title }}</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <script src="http://code.jquery.com/jquery-3.1.1.min.js"></script>  
+
+    <style type="text/css">
+    body{  
+    font-size:12px;  
+    font-family:"宋体";}
+
+   .bule{   
+   border-color:#ABFEFE;}  
+   
+   .font1{  
+       color:#666;} 
+    </style>
+
+</head>
+<body>
+  <table width="1000" height="29" border="0" align="center"> 
+   <tbody>
+    <tr> 
+     <td width="80" height="29"><img src="static/p1.png" height="29" border="0" /></td> 
+     <td bgcolor="#B9EDF7"><b>{{ title }}</b></td> 
+    </tr> 
+   </tbody>
+  </table> 
+  <br />
+  <br />
+
+<form  enctype="multipart/form-data">
+<br />
+   <table width="850" border="0" align="center" style="border-collapse:separate; border-spacing:0px 10px;"> 
+    <tbody>
+
+     {% if model == "local" %}
+     <tr> 
+     <td><b>srcType： </b></td> 
+     <td> <input type="text" id="srcType" size="20" class="bule" value="{{ model }}"/>&nbsp;&nbsp;同步源类型</td> 
+     </tr> 
+
+     <tr> 
+     <td><b>srcPrefix：</b></td> 
+     <td colspan="2"> <input type="text" id="srcPrefix" size="20" class="bule" placeholder="/home/admin/example/"/>&nbsp;&nbsp;指定迁移的目录路径,'/' 分割以及结尾</td>
+     </tr> 
+     {% end %}
+
+     {% if model == "cloud" %}
+     <tr>
+     <td><b>srcType： </b></td>
+     <td> <input type="text" id="srcType" size="20" class="bule" placeholder="同步源类型" />&nbsp;&nbsp;oss/qiniu/bos/ks3/s3/youpai/cos/szure</td>
+     </tr>
+     <tr>
+     <td><b>srcAccessKey：</b></td>
+     <td colspan="2"> <input type="text" id="srcAccessKey" size="20" class="bule" placeholder="源 Access key"/>&nbsp;&nbsp;又拍云填写操作员账号</td>
+     </tr>
+     <tr>
+     <td><b>srcSecretKey：</b></td>
+     <td colspan="2"> <input type="text" id="srcSecretKey" size="20" class="bule" placeholder="源 Secret key"/>&nbsp;&nbsp;又拍云填写操作员密码</td>
+     </tr>
+     <tr>
+     <td><b>srcDomain：</b></td>
+     <td colspan="2"> <input type="text" id="srcDomain" size="20" class="bule" placeholder="源公网 domain 或 endpoint"/></td>
+     </tr>
+     <tr>
+     <td><b>srcBucket：</b></td>
+     <td colspan="2"> <input type="text" id="srcBucket" size="20" class="bule" placeholder="源 bucket" />&nbsp;&nbsp;不需要加上'/'</td>
+     </tr>
+     <tr>
+     <td><b>srcPrefix：</b></td>
+     <td colspan="2"> <input type="text" id="srcPrefix" size="20" class="bule" placeholder="例:/home/path/to/file/"/>&nbsp;&nbsp;指定迁移的目录路径以 '/' 结尾,可以不写</td>
+     </tr>
+     {% end %}
+
+     {% if model == "http" %}
+     <tr>
+     <td><b>srcType： </b></td>
+     <td> <input type="text" id="srcType" size="20" class="bule" value="{{ model }}" />&nbsp;&nbsp;同步源类型</td>
+     </tr>
+     <tr>
+     <td><b>httplistfilepath：</b></td>
+     <td colspan="2"> <input type="text" id="httplistfilepath" size="20" class="bule" placeholder="/path/to/httpurl.list"/>&nbsp;&nbsp;HTTPLIST 存放路径,文件内容按照 "destDomain/destBucket/destPrefix  bb.jpg" 格式编写 </td>
+     </tr>
+     {% end %}
+
+     <tr> 
+     <td><b>destAccessKey：</b></td> 
+     <td colspan="2"> <input type="password" id="destAccessKey" size="20" class="bule" placeholder="目的 AccessKey"/></td> 
+     </tr>
+
+     <tr> 
+     <td><b>destSecretKey：</b></td> 
+     <td colspan="2"> <input type="password" id="destSecretKey" size="20" class="bule" placeholder="目的 SecretKey"/></td> 
+     </tr> 
+
+     <tr> 
+     <td><b>destDomain：</b></td> 
+     <td colspan="2"> <input type="text" id="destDomain" size="20" class="bule" placeholder="OSS EndPoint"/>&nbsp;&nbsp;http[s]://oss-cn-shanghai[-internal].aliyuncs.com</td> 
+     </tr> 
+
+     <tr> 
+     <td><b>destPrefix：</b></td> 
+     <td colspan="2"> <input type="text" id="destPrefix" size="20" class="bule" placeholder="例:prefix/path/"/>&nbsp;&nbsp;目的 oss prefix 可以不写则同步到 '/' 下</td> 
+     </tr> 
+
+     <tr> 
+     <td><b>destBucket：</b></td> 
+     <td colspan="2"> <input type="text" id="destBucket" size="20" class="bule" placeholder="目的 bucket,不需要加上 /" /></td> 
+     </tr> 
+
+     <tr> 
+     <td><b>迁移机器数量：</b></td> 
+     <td colspan="2"> <input type="text" id="ecsnum" size="20" class="bule" placeholder="例:10" />&nbsp;&nbsp;实际迁移机器数 </td>
+     </tr> 
+
+     <tr> 
+     <td><b>迁移文件数量：</b></td> 
+     <td colspan="2"> <input type="text" id="filenum" size="20" class="bule" placeholder="例:100000000" />&nbsp;&nbsp;实际迁移源文件数量</td> 
+     </tr> 
+
+     <tr> 
+     <td><b>迁移数据量：</b></td> 
+     <td colspan="2"> <input type="text" id="storesize" size="20" class="bule" value="{{ size }}"/>&nbsp;&nbsp;</td> 
+     </tr> 
+
+     <tr> 
+     <td><b>迁移机器配置选型：</b></td> 
+     <td colspan="10"> <input type="radio" name="ecs" value="LD" />4核8G以下 <input type="radio" name="ecs" value="MD" />8核16G以下 <input type="radio" name="ecs" value="HD" />16核64G以下 <input type="radio" name="ecs" value="SD" />32核128以下 <input type="radio" name="ecs" value="TD" />32核128以上 </td> 
+     </tr> 
+
+     <tr> 
+     <td colspan="3" align="center"><input id="base" type="submit" value="submit" /></td> 
+     </tr> 
+
+    </tbody>
+   </table> 
+
+</form>
+    <script type="text/javascript">
+        $("#base").click(function()
+        {
+          var srcType = $("#srcType").val();
+          var destAccessKey = $("#destAccessKey").val();
+          var destSecretKey = $("#destSecretKey").val();
+          var destDomain = $("#destDomain").val();
+          var destPrefix = $("#destPrefix").val();
+          var destBucket = $("#destBucket").val();
+          var ecsnum= $("#ecsnum").val();
+          var filenum = $("#filenum").val();
+          var storesize = $("#storesize").val();
+          var ecs= $("input[name='ecs']:checked").val();
+
+          if(srcType=="local"){ 
+            var srcPrefix = $("#srcPrefix").val();
+            var datas = {"srcType":srcType,"srcPrefix":srcPrefix,"destAccessKey":destAccessKey,"destSecretKey":destSecretKey,"destDomain":destDomain,"destPrefix":destPrefix,"destBucket":destBucket,"ecsnum":ecsnum,"filenum":filenum,"storesize":storesize,"ecs":ecs}
+          }else if (srcType=="http"){
+            var httplistfilepath = $("#httplistfilepath").val();
+            var datas = {"srcType":srcType,"httplistfilepath":httplistfilepath,"destAccessKey":destAccessKey,"destSecretKey":destSecretKey,"destDomain":destDomain,"destPrefix":destPrefix,"destBucket":destBucket,"ecsnum":ecsnum,"filenum":filenum,"storesize":storesize,"ecs":ecs}
+          }else{
+            var srcAccessKey = $("#srcAccessKey").val();
+            var srcSecretKey = $("#srcSecretKey").val();
+            var srcDomain = $("#srcDomain").val();
+            var srcBucket = $("#srcBucket").val();
+            var srcPrefix = $("#srcPrefix").val();
+            var datas = {"srcType":srcType,"srcPrefix":srcPrefix,"srcAccessKey":srcAccessKey,"srcSecretKey":srcSecretKey,"srcDomain":srcDomain,"srcBucket":srcBucket,"destAccessKey":destAccessKey,"destSecretKey":destSecretKey,"destDomain":destDomain,"destPrefix":destPrefix,"destBucket":destBucket,"ecsnum":ecsnum,"filenum":filenum,"storesize":storesize,"ecs":ecs}
+          }
+
+
+          $.ajax({
+              type:"post",
+              url:"/getall",
+              data:datas,
+              cache:false,
+              success:function(data,status){
+                  if(data != "error"){
+                    alert(data);
+                    window.location.href='/deployip?'+data;
+                  }
+                  else{
+                    alert("check input data type and item is not null"); 
+                    window.location.href='/ossimport';
+                  }
+              },
+          });
+
+        });
+    
+    </script>
+</body>
+</html>
