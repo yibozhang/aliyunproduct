@@ -1,3 +1,7 @@
+#!/usr/bin/env python
+#Author: hanli
+#Update: 2018-09-22
+
 from optparse import OptionParser
 import urllib,urllib2
 import datetime
@@ -40,15 +44,15 @@ class Main():
   
     SRM = datetime.datetime.utcnow()
     GMT = SRM.strftime('%a, %d %b %Y %H:%M:%S GMT')
-    self.stamp = int(time.mktime(time.strptime(SRM.strftime('%a %b %d %H:%M:%S %Y'))))+32400
+    STAMP = int(time.mktime(time.strptime(SRM.strftime('%a %b %d %H:%M:%S %Y'))))+32400
     
-    return GMT
+    return GMT,STAMP
 
   # GET Signature
 
   def GetSignature(self):
 
-    mac = hmac.new("{0}".format(self.sk),"PUT\n\n{0}\n{1}\nx-oss-expires:{4}\n/{2}/{3}".format(self.types,self.GetGMT(),self.bk,self.oj,self.stamp), sha)
+    mac = hmac.new("{0}".format(self.sk),"PUT\n\n{0}\n{1}\nx-oss-expires:{4}\n/{2}/{3}".format(self.types,self.GetGMT()[0],self.bk,self.oj,self.GetGMT()[1]), sha)
     Signature = base64.b64encode(mac.digest())
    
     return Signature
@@ -69,9 +73,9 @@ class Main():
       sys.exit('\033[1;31;40m[error:]\033[0mraise AttributeError, attr')
 
     try:
-     request.add_header('Host','ali-beijing.oss-cn-beijing.aliyuncs.com')
-     request.add_header('Date','{0}'.format(self.GetGMT()))
-     request.add_header('x-oss-expires','{0}'.format(self.stamp))
+     request.add_header('Host','chatfile.oss-cn-shanghai.aliyuncs.com')
+     request.add_header('Date','{0}'.format(self.GetGMT()[0]))
+     request.add_header('x-oss-expires','{0}'.format(self.GetGMT()[1]))
      request.add_header('Authorization','OSS {0}:{1}'.format(self.ak,self.GetSignature()))
      request.get_method = lambda:'PUT'
      response = urllib2.urlopen(request,timeout=10)
