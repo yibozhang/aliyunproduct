@@ -1,4 +1,8 @@
 #-*- coding:utf8 -*-
+#!/usr/bin/env python
+#Author: hanli
+#Update: 2018-09-22
+
 from optparse import OptionParser
 import collections
 import oss2
