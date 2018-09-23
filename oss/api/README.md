@@ -32,12 +32,12 @@
 
     Options:
        -h, --help  show this help message and exit
-       -i AK       <Accesskey>
-       -k SK       <AccessKeySecrety>
-       -e ED       dest oss <endpoint>
-       -b BK       dest oss <bucket>
-       -s CDN      cors allow <domain>
-       -m METH     cors http method <GET,POST,PUT,HEADER>
-       -t TYPES    cors file type multiparts operate or single operate<multi,single>
+       -i AK       <Accesskey>  阿里云的云账号或者具备操作 OSS 权限的 RAM 子账号，Accesskey
+       -k SK       <AccessKeySecrety>  阿里云的云账号或者具备操作 OSS 权限的 RAM 子账号，Accesskey Secrety
+       -e ED       dest oss <endpoint> OSS endpoint，可以从控制台上获取
+       -b BK       dest oss <bucket> OSS bucket
+       -s CDN      cors allow <domain> 跨域访问 OSS 的 CDN 域名
+       -m METH     cors http method <GET,POST,PUT,HEADER> 指定跨域访问的 HTTP 请求方式
+       -t TYPES    cors file type multiparts operate or single operate<multi,single> 操作 OSS 的方式是单一文件 上传/下载，还是大文件文件的分片 上传/下载
 
 
