@@ -61,19 +61,19 @@ class MainFunction():
         flag=False
         self.ConsoleLog(3)
  
-      if not (re.match(str(methods.split(",")),self.args['meth']) or methods=="*"):
-        flag=False
-        self.ConsoleLog(4)
+      for meth in self.args['meth'].split(","):
+        if not (meth in methods.split(",") or methods=="*"):
+          flag=False
+          self.ConsoleLog(4,meth)
 
       if self.args['types'] == "multi":
-        if not (re.match("(etag|Etag|\*| )",expose)):
+        if not (re.match("(etag|Etag| )",expose)):
           flag=False
           self.ConsoleLog(6)
 
       if headers == None:
         flag=False
         self.ConsoleLog(5)
-
 
     except Exception as e:
       self.ConsoleLog(e) 
@@ -104,7 +104,7 @@ class MainFunction():
 
   # output error log
 
-  def ConsoleLog(self,level):
+  def ConsoleLog(self,level,meth=None):
 
     if level == 0:
       print('{0}[ERROR]{1}All parameters cannot be empty'.format(self.left,self.right))
@@ -119,7 +119,7 @@ class MainFunction():
       print('{0}[CheckResult]{1}OSS Access-Control-Allow-Origin Config Error {2}, You can fill in * or http://domain'.format(self.left,self.right,self.args['cdn']))
 
     if level == 4:
-      print('{0}[CheckResult]{1}OSS Access-Control-Allow-Methods Config Error{2}, You can fill in * or methods'.format(self.left,self.right,self.args['meth']))
+      print('{0}[CheckResult]{1}OSS Access-Control-Allow-Methods Config Error {2}, You can fill in * or methods'.format(self.left,self.right,meth))
 
     if level == 5:
       print('{0}[CheckResult]{1}Access-Control-Allow-Headers OSS Config Error, You can fill in * or headers'.format(self.left,self.right))
