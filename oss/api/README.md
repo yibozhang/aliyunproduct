@@ -25,4 +25,19 @@
 
 ### AnalysisCors.py 脚本环境基础 2.7.5 来编写，如移植到各位客户机器上有异常，请看下对应的库文件，或者兼容性问题。
 
-## 注意：使用之前请 pip install oss2 安装 OSS 模块
+### 注意：使用之前请 pip install oss2 安装 OSS 模块
+
+    $PSA1#: python AnalysisCore.py -h
+    Usage: AnalysisCore.py [options]
+
+    Options:
+       -h, --help  show this help message and exit
+       -i AK       <Accesskey>
+       -k SK       <AccessKeySecrety>
+       -e ED       dest oss <endpoint>
+       -b BK       dest oss <bucket>
+       -s CDN      cors allow <domain>
+       -m METH     cors http method <GET,POST,PUT,HEADER>
+       -t TYPES    cors file type multiparts operate or single operate<multi,single>
+
+
