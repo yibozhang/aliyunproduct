@@ -85,13 +85,13 @@ class MainFun():
       elif codec.lower() in ['h264','theora']:
         self.ConsoleLog("FireFox can playing video","result")
       else:
-        self.ConsoleLog("Chrom and FireFox not playing video")
+        self.ConsoleLog("Chrom and FireFox not Support video encode type","exec")
 
     if types == 'audio':
       if codec.lower() in ['vorbis','wmv','aac','mp3']:
         self.ConsoleLog("Chrom and FireFox can playing audio","result")
       else:
-        self.ConsoleLog("Chrom and FireFox not playing audio","result")
+        self.ConsoleLog("Chrom and FireFox not Support audio enccode type","exec")
 
   '''
   output log
@@ -102,6 +102,8 @@ class MainFun():
       sys.exit("{0}[ERROR:]{1}{2}".format(self.left,self.right,level))
     elif tag == "result":
       print("{0}[CheckResult:]{1}{2}".format(self.gren,self.right,level))
+    if tag == "exce":
+      print("{0}[ERROR:]{1}{2}".format(self.left,self.right,level))
     else:
       print("[INFO:]{2}".format(self.gren,self.right,level))
  
