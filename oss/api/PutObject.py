@@ -52,7 +52,7 @@ class Main():
 
   def GetSignature(self):
 
-    mac = hmac.new("{0}".format(self.sk),"PUT\n\n{0}\n{1}\nx-oss-expires:{4}\n/{2}/{3}".format(self.types,self.GetGMT()[0],self.bk,self.oj,self.GetGMT()[1]), sha)
+    mac = hmac.new("{0}".format(self.sk),"PUT\n\n{0}\n{1}\n/{2}/{3}".format(self.types,self.GetGMT()[0],self.bk,self.oj), sha)
     Signature = base64.b64encode(mac.digest())
    
     return Signature
@@ -73,9 +73,8 @@ class Main():
       sys.exit('\033[1;31;40m[error:]\033[0mraise AttributeError, attr')
 
     try:
-     request.add_header('Host','chatfile.oss-cn-shanghai.aliyuncs.com')
+     request.add_header('Host','{0}.{1}'.format(self.bk,self.ed))
      request.add_header('Date','{0}'.format(self.GetGMT()[0]))
-     request.add_header('x-oss-expires','{0}'.format(self.GetGMT()[1]))
      request.add_header('Authorization','OSS {0}:{1}'.format(self.ak,self.GetSignature()))
      request.get_method = lambda:'PUT'
      response = urllib2.urlopen(request,timeout=10)
