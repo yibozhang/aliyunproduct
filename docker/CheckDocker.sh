@@ -42,6 +42,17 @@ function GET_DOCKER_LOGS() {
     echo "No VIPSERVER log found!" >>$LOG
   fi
 
+  echo -e "$RL============GET_CATALINA_LOG===============$RR" >> $LOG
+  TAOBAO=$(ls /home/admin/b88fd5c6-0a9e-4235-8807-24716ff2b9d0/home/admin/ | grep "tao")
+
+  if [ "${TAOBAO}" == "" ]; then
+    echo "No catalina.out found!" 
+  else
+    if [ -f "/home/admin/${APPID}/home/admin/${TAOBAO}/logs/catalina.out" ]; then
+      cat /home/admin/${APPID}/home/admin/${TAOBAO}/logs/catalina.out >>$LOG
+    fi
+  fi
+
   GET_DOCKER_ENV
 
 }
@@ -52,6 +63,7 @@ function GET_DOCKER_ENV() {
   docker inspect ${CONTAINERID[0]} >> $LOG
 }
 
+# 进入检查模式
 function CHECK_START_FAILD() {
 
   local PORT=$(docker ps | egrep -o "0.*tcp" | awk -F- '{print $1}' | awk -F: '{print $2}' 2>&1)
