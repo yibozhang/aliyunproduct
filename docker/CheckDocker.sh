@@ -53,6 +53,13 @@ function GET_DOCKER_LOGS() {
     fi
   fi
 
+  echo -e "$RL============GET_EDASTRACE_LOG==============$RR" >> $LOG
+  if [ -f "/home/admin/edas/script/logs/edas.action.trace" ]; then
+    cat /home/admin/edas/script/logs/edas.action.trace >>$LOG
+  else
+    echo "No edas.action.trace found!"
+  fi
+
   GET_DOCKER_ENV
 
 }
