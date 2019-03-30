@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+ <html lang="en">
+ 
+ <head>
+     <meta charset="UTF-8">
+     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+     <!-- 引进来了 -->
+     <link href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+     <script src="https://cdn.bootcss.com/jquery/1.12.4/jquery.min.js"></script>
+     <script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+     <title>Document</title>
+     <style>
+        .tsb{
+           padding: 10px;
+           margin-top:20px;
+           margin-left:10px;
+           top:20px;
+           text-align: center;
+           float: center;
+         }
+         .content{
+             top: 0;
+             left: 0;
+
+             width: 80%;
+             height: 100%;
+             float: left;
+             //background-color: pink;
+         }
+         .content div{
+             display: none;
+         }
+         .sideBar{
+            top: 0;
+            left: 0;
+            height: 100%;
+
+             width: 20%;
+             float: left;
+         }
+         .content div.selected{
+             display: block;
+         }
+     </style>
+ </head>
+ <body>
+     <div class="sideBar">
+         <ul class="nav nav-pills nav-stacked">
+             <li role="presentation" class="active">
+                 <a href="#">OSS 迁移工具</a>
+             </li>
+             <li role="presentation">
+                 <a href="#">EDAS docker 排查工具</a>
+             </li>
+             <li role="presentation">
+                 <a href="#">CDN 探测工具</a>
+             </li>
+         </ul>
+     </div>
+ 
+     <div class="content" >
+         <div class="content1 selected">
+<iframe id="iframepage" name="iframepage" onLoad="iFrameHeight()" src="http://oss.zhangyb.mobi/transportdata"  style="width:100%;" frameborder="0"></iframe>
+         </div>
+         <div class="content1">
+           <table class="tsb" border="1" width="50%">
+           <tr>
+             <td>脚本下载地址</a></td>
+             <td>使用说明</td>
+           </tr><tr>
+             <td><a href="http://hanli-shenzhen.oss-cn-shenzhen.aliyuncs.com/edas/CheckDocker.sh">docker 排查脚本</a></td>
+             <td>bash <脚本> -m $app_id 进入检测模式 <br> bash <脚本> -c $app_id 进入搜集排查信息模式</td>
+           <tr>
+           </table>
+         </div>
+         <div class="content1">
+           <table class="tsb" border="1" width="50%">
+           <tr>
+             <td>脚本下载地址</a></td>
+             <td>使用说明</td>
+           </tr><tr>
+             <td><a href="http://hanli-shenzhen.oss-cn-shenzhen.aliyuncs.com/ossdoc/testconnect.bat">CDN windows 端网络探测脚本</a></td>
+             <td>windows 端探测脚本，直接运行输入域名</td>
+           <tr>
+           </table>
+         </div>
+     </div>
+     <script>
+         function iFrameHeight() { 
+         var ifm= document.getElementById("iframepage"); 
+         var subWeb = document.frames ? document.frames["iframepage"].document : ifm.contentDocument; 
+           if(ifm != null && subWeb != null) { 
+           ifm.height = subWeb.body.scrollHeight; 
+           } 
+         } 
+
+         $('.sideBar ul li').click(function(){
+             $(this).addClass('active').siblings().removeClass('active');
+             $('.content > div').eq($(this).index()).addClass('selected').siblings().removeClass('selected');
+         })
+     </script>
+ </body>
+ </html>
+
+[root@edas02 static]# ^C
+[root@edas02 static]# cat TransportOSSData.html 
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>hangge.comm</title>
+    <script src="https://hanli-shenzhen.oss-cn-shenzhen.aliyuncs.com/jquery.min.js"></script>
+    <style>
+        #container{
+            width:350px;
+            margin:20px auto;
+            padding:15px;
+            background-color:#eee;
+          border-radius: 15px;
+        }
+
+        #container2{
+            width:350px;
+            height:280px;
+            margin:20px auto;
+            padding:15px;
+            background-color:#eee;
+          border-radius: 15px;
+        }
+ 
+        button, input, textarea{
+            padding:5px;
+            font-size: 16px;
+        }
+        form label{display:inline-block;width:140px;text-align:right}
+    </style>
+    <script>
+
+        //初始参数个数
+        var varCount = 0;
+ 
+        $(function(){
+
+            //$("form :input.required").each(function () {
+            //    var $required = $("<strong class='high' color='red'>*</strong>");
+            //    $(this).parent().append($required);
+            //});
+
+          //新增按钮点击
+            $('#addVar').on('click', function(){
+                varCount++;
+                $node = '<p><label for="src'+varCount+'">srcPrefix'+varCount+': </label>'
+                  + '<input type="text" name="srcPrefix'+varCount+'" id="src'+varCount+'"></p>'
+                  +'<p><label for="db'+varCount+'">destBucket'+varCount+': </label>'
+                  + '<input type="text" name="destBucket'+varCount+'" id="db'+varCount+'"></p>'
+                  +'<p><label for="de'+varCount+'">destDomain'+varCount+': </label>'
+                  + '<input type="text" name="destDomain'+varCount+'" id="de'+varCount+'"></p>'
+                  +'<p><label for="dp'+varCount+'">destPrefix'+varCount+': </label>'
+                  + '<input type="text" name="destPrefix'+varCount+'" id="dp'+varCount+'"></p>';
+                  //新表单项添加到td中
+                $("#myTd").append($node);
+            });
+        });
+
+        function reset(){
+          window.location.reload();
+        }
+
+        function jqajax(){
+          $("#result").val("迁移进行中，请勿重复操作！！！")
+          var params = $("#myForm").serializeArray();
+          var values = {};
+          for(zq in params){
+            //if( params[zq].value == "" and params[zq] != "destPrefix"){
+            //  $("#result").val(params[zq].name+"：不能为空")
+            //  return false;
+            //}else{
+            values[params[zq].name] = params[zq].value;
+            //}
+          }
+
+          values['store'] = $("#store").val();
+          values['count'] = varCount;
+          var zdata = JSON.stringify(values);
+          $.ajax({
+            type: 'POST',
+            url: '/register0data',
+            data: zdata,
+            cache: false,
+            success:function(data,status){
+              if (data != ""){
+                $("#result").val(data);
+              }else {
+                alert("error");
+              }
+            }
+
+          })
+        }
+    </script>
+</head>
+<body>
+<div id="container">
+  <form id="myForm" method="post">
+    <h7 >OSS 迁移工具（ECS-> OSS）</h7>
+    <table id="myTable">
+      <tr>
+        <td id="myTd">
+          <p><label for="src">srcPrefix: </label><input type="text" class="required" name="srcPrefix" id="src" placeholder="迁移源路径以'/'结尾"></p>
+          <p><label for="db">destBucket: </label><input type="text" class="required" name="destBucket" id="db" placeholder="目标 bucket"></p>
+          <p><label for="db">destDomain: </label><input type="text" class="required" name="destDomain" id="de" placeholder="目标 OSS endpoint"></p>
+          <p><label for="ak">AccesskeyID: </label><input type="text" class="required" name="destAccessKey" id="ak" placeholder="RAM AccessekyID"></p>
+          <p><label for="sk">AccessKeySecret: </label><input type="text" class="required" name="destSecretKey" id="sk" placeholder="RAM AccessKeySecret" ></p>
+          <p><label for="destPrefix">destPrefix: </label><input type="text" class="required" name="destPrefix" id="dp" placeholder="迁移目标目录以'/'结尾"></p>
+          <p><label for="ecs">ECS level:</label>
+            <select size="1" id="store" align="right">
+            <option value="ld">4核8G以下</option>
+            <option value="md">8核16G以下</option>
+            <option value="hd">16核64G以下</option>
+            <option value="sd">32核128以下</option>
+            <option value="td">32核128以上</option>
+            </select></p>
+          <p><label for="user">LoginUser: </label><input type="text" class="required" name="user" id="user" placeholder="ECS login user" ></p>
+          <p><label for="user">LoginIP: </label><input type="text" class="required" name="eip" id="eip" placeholder="ECS IP" ></p>
+          <p><label for="pass">LoginPass: </label><input type="Password" class="required" name="pass" id="pass" placeholder="ECS login password"></p>
+          <p><label for="user">LoginPort: </label><input type="text" class="required" name="port" id="port" placeholder="ECS SSH port" ></p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <input id="addVar" type="button" value="新增数据源"/>
+          <input type="button" onclick="reset();" value="重置" style="float:center"/>
+          <input type="button" onclick="jqajax();" value="迁移" style="float:right"/>
+        </td>
+      </tr>
+    </table>
+  </form>
+</div>
+<div id="container2">
+<span>执行结果</span>
+<textarea id="result" rows="14" cols="40">
+</textarea>
+</div>
+</body>
+</html>
