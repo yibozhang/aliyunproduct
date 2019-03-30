@@ -1,0 +1,103 @@
+
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>test layout</title>
+  <style type="text/css">
+    *{
+      padding: 0;
+      margin: 0;
+    }
+    /*html{
+      overflow-x:hidden;   
+    }*/  /*方法2*/
+    .left{
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100px;
+      height: 100%;
+      background-color: red;
+    }
+    .right{
+      position: absolute;
+      width: calc(100% - 100px);  /*方法1*/
+      /*width: 100%;*/  /*方法2*/
+      min-height: 100%;
+      margin-left: 100px;
+      background-color: blue;
+    }
+    .center{
+      width: 100px;
+      background-color: yellow;
+      margin: 0 auto;
+    }
+  </style>
+  <script>
+    window.onload = function(){
+      var addBtn = document.getElementsByClassName('js-add-btn')[0];
+      var delBtn = document.getElementsByClassName('js-del-btn')[0];
+      var right = document.getElementsByClassName('right')[0];
+      addBtn.onclick = function(e){
+        var pNode = document.createElement('p');
+        pNode.innerText = 'content';
+        for(var i = 0; i < 20; i++){
+          var cpNode = pNode.cloneNode(true);
+          right.appendChild(cpNode);  
+        }
+      }
+      delBtn.onclick = function(e){
+        var children = right.children;
+        var len = children.length;
+        var delCount = len > 20 ? 20 : len;
+        for(var i = 0; i < delCount; i++){
+          right.removeChild(children[len - (i + 1)]);
+        }
+      }
+    }
+  </script>
+</head>
+<body>
+  <div class="left">
+    <p>left</p>
+    <button class="js-add-btn">增加右侧内容</button>
+    <button class="js-del-btn">删除右侧内容</button>
+  </div>
+  <div class="right">
+    <div class="center">
+      <p>centered content</p>
+    </div>
+    <p>lots of content</p>
+    <p>lots of content</p>
+    <p>lots of content</p>
+    <p>lots of content</p>
+    <p>lots of content</p>
+    <p>lots of content</p>
+    <p>lots of content</p>
+    <p>lots of content</p>
+    <p>lots of content</p>
+    <p>lots of content</p>
+    <p>lots of content</p>
+    <p>lots of content</p>
+    <p>lots of content</p>
+    <p>lots of content</p>
+    <p>lots of content</p>
+    <p>lots of content</p>
+    <p>lots of content</p>
+    <p>lots of content</p>
+    <p>lots of content</p>
+    <p>lots of content</p>
+    <p>lots of content</p>
+    <p>lots of content</p>
+    <p>lots of content</p>
+    <p>lots of content</p>
+    <p>lots of content</p>
+    <p>lots of content</p>
+    <p>lots of content</p>
+    <p>lots of content</p>
+    <p>lots of content</p>
+    <p>lots of content</p>
+  </div>
+</body>
+</html>
