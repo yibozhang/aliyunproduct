@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+ <html lang="en">
+ 
+ <head>
+     <meta charset="UTF-8">
+     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+     <!-- 引进来了 -->
+     <link href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+     <script src="https://cdn.bootcss.com/jquery/1.12.4/jquery.min.js"></script>
+     <script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+     <title>Document</title>
+     <style>
+        .tsb{
+           padding: 10px;
+           margin-top:20px;
+           margin-left:10px;
+           top:20px;
+           text-align: center;
+           float: center;
+         }
+         .content{
+             top: 0;
+             left: 0;
+
+             width: 80%;
+             height: 100%;
+             float: left;
+             //background-color: pink;
+         }
+         .content div{
+             display: none;
+         }
+         .sideBar{
+            top: 0;
+            left: 0;
+            height: 100%;
+
+             width: 20%;
+             float: left;
+         }
+         .content div.selected{
+             display: block;
+         }
+     </style>
+ </head>
+ <body>
+     <div class="sideBar">
+         <ul class="nav nav-pills nav-stacked">
+             <li role="presentation" class="active">
+                 <a href="#">OSS 迁移工具</a>
+             </li>
+             <li role="presentation">
+                 <a href="#">EDAS docker 排查工具</a>
+             </li>
+             <li role="presentation">
+                 <a href="#">CDN 探测工具</a>
+             </li>
+         </ul>
+     </div>
+ 
+     <div class="content" >
+         <div class="content1 selected">
+<iframe id="iframepage" name="iframepage" onLoad="iFrameHeight()" src="http://oss.zhangyb.mobi/transportdata"  style="width:100%;" frameborder="0"></iframe>
+         </div>
+         <div class="content1">
+           <table class="tsb" border="1" width="50%">
+           <tr>
+             <td>脚本下载地址</a></td>
+             <td>使用说明</td>
+           </tr><tr>
+             <td><a href="http://hanli-shenzhen.oss-cn-shenzhen.aliyuncs.com/edas/CheckDocker.sh">docker 排查脚本</a></td>
+             <td>bash <脚本> -m $app_id 进入检测模式 <br> bash <脚本> -c $app_id 进入搜集排查信息模式</td>
+           <tr>
+           </table>
+         </div>
+         <div class="content1">
+           <table class="tsb" border="1" width="50%">
+           <tr>
+             <td>脚本下载地址</a></td>
+             <td>使用说明</td>
+           </tr><tr>
+             <td><a href="http://hanli-shenzhen.oss-cn-shenzhen.aliyuncs.com/ossdoc/testconnect.bat">CDN windows 端网络探测脚本</a></td>
+             <td>windows 端探测脚本，直接运行输入域名</td>
+           <tr>
+           </table>
+         </div>
+     </div>
+     <script>
+         function iFrameHeight() { 
+         var ifm= document.getElementById("iframepage"); 
+         var subWeb = document.frames ? document.frames["iframepage"].document : ifm.contentDocument; 
+           if(ifm != null && subWeb != null) { 
+           ifm.height = subWeb.body.scrollHeight; 
+           } 
+         } 
+
+         $('.sideBar ul li').click(function(){
+             $(this).addClass('active').siblings().removeClass('active');
+             $('.content > div').eq($(this).index()).addClass('selected').siblings().removeClass('selected');
+         })
+     </script>
+ </body>
+ </html>
