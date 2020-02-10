@@ -109,34 +109,36 @@ class Refresh(object):
   描述：刷新/预热任务
   '''
   def doRefresh(self,lists,types,client):
+    try:
+      if types == 'clear':
+        taskID = 'RefreshTaskId'
+        request = RefreshObjectCachesRequest()
+      elif types == 'push':
+        taskID = 'PushTaskId'
+        request = PushObjectCacheRequest()
 
-     if types == 'clear':
-       taskID = 'RefreshTaskId'
-       request = RefreshObjectCachesRequest()
-     elif types == 'push':
-       taskID = 'PushTaskId'
-       request = PushObjectCacheRequest()
-
-     taskreq = DescribeRefreshTasksRequest()
-     request.set_accept_format('json')
-     request.set_ObjectPath(lists)
-     response = json.loads(client.do_action_with_exception(request))
-     print(response)
+      taskreq = DescribeRefreshTasksRequest()
+      request.set_accept_format('json')
+      request.set_ObjectPath(lists)
+      response = json.loads(client.do_action_with_exception(request))
+      print(response)
     
-     while True:
-      count = 0
-      taskreq.set_accept_format('json')
-      taskreq.set_TaskId(int(response[taskID]))
-      taskresp = json.loads(client.do_action_with_exception(taskreq))
-      print("[" + response[taskID] + "]" + "is doing... ...")
-      for t in taskresp['Tasks']['CDNTask']:
-       if t['Status'] != 'Complete':
-        count += 1
-      if count == 0:
-       break
-      else:
-       continue
-      time.sleep(1)
+      while True:
+        count = 0
+        taskreq.set_accept_format('json')
+        taskreq.set_TaskId(int(response[taskID]))
+        taskresp = json.loads(client.do_action_with_exception(taskreq))
+        print("[" + response[taskID] + "]" + "is doing... ...")
+        for t in taskresp['Tasks']['CDNTask']:
+          if t['Status'] != 'Complete':
+            count += 1
+        if count == 0:
+          break
+        else:
+          continue
+        time.sleep(1)
+    except Exception as e:
+      sys.exit("[Error]" + str(e))
 
   '''
   描述：帮助信息
