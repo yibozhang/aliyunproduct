@@ -6,8 +6,6 @@
 * 安装成功后，脚本帮助参数 python $scripte -h
 
 ```
-java
-
 script options explain:             
 	 -i <AccessKey>       访问阿里云凭证，访问控制台上可以获得；             
 	 -k <AccessKeySecret> 访问阿里云秘钥，访问控制台上可以获得；             
