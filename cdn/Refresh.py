@@ -147,7 +147,7 @@ class Refresh(object):
             \n\t -k <AccessKeySecret> 访问阿里云秘钥，访问控制台上可以获得； \
             \n\t -r <filename>        文件名称，每行一条 URL，有特殊字符先做 URLencode，以 http/https 开头； \
             \n\t -t <taskType>        任务类型 clear 刷新，push 预热； \
-            \n\t -n [nums,[..100]]    每次操作文件数量，做多 100 条；")
+            \n\t -n [nums,[..100]]    可选项，每次操作文件数量，做多 100 条；")
 
 #TODO 入口
 
