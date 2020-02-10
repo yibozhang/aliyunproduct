@@ -14,7 +14,7 @@ try:
  from aliyunsdkcdn.request.v20180510.DescribeRefreshTasksRequest import DescribeRefreshTasksRequest
  from aliyunsdkcdn.request.v20180510.DescribeRefreshQuotaRequest import DescribeRefreshQuotaRequest
 except:
- print("[Error] Please pip install aliyun-python-sdk-cdn and coresdk，start install now......")
+ sys.exit("[Error] Please pip install aliyun-python-sdk-cdn and aliyun-java-sdk-core ，please install now......")
 
 class Refresh(object):
 
