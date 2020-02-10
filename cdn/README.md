@@ -5,10 +5,10 @@
 
 ## 使用方法：
 
-* 1、先要按照 CDN  SDK 模块：pip install aliyun-python-sdk-cdn
-* 2、再安装阿里云核心 SDK 模块：pip install aliyun-java-sdk-core
-* 3、在 python 2.75 以上的环境运行；
-* 安装成功后，脚本帮助参数 python $scripte -h
+* 1、先要按照 CDN  SDK 模块：pip install aliyun-python-sdk-cdn，目前使用是 v20180510 版本
+* 2、再安装阿里云核心 SDK 模块：pip install aliyun-java-sdk-core，目前使用是 v20180510 版本
+* 3、在 linux 或者 windows python 2.75 以上的环境运行；
+* 4、安装成功后，脚本帮助参数 python $scripte -h
 
 ```
 script options explain:             
