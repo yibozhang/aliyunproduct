@@ -1,0 +1,197 @@
+CDN 筛选题 （每道题 10分，至少 60分及格）
+
+1、访问一个 CDN 域名 www.a.com 时，如果 localdns 没有缓存时，请描述下 DNS 的解析过程；
+
+答案：
+1）客户端发起域名的 dns 递归请求到客户的本地 localdns
+2）localdns 发起向上一级 市/省 逐渐发起递归，直到请求到 CDN 厂商的 NS  server (简称权威服务器）
+3）NS server 在按照客户端的 DNS IP 找到客户所在的物理位置；
+4）按照客户端 DNS物理位置返回一个所在地区的 CDN IP （简称 A 记录） 吐给客户
+5）客户端再按照 TTL 缓存时间缓存到 localdns 上；
+
+2、如何指定 8.8.8.8 DNS 解析 CDN 域名 www.a.com 的 CNAME 记录；
+
+答案：
+dig www.a.com @8.8.8.8
+nslookup www.a.com @8.8.8.8
+
+3、如果用 curl wget 测试一个 CDN 的 URL 链接，获取返回的 response header
+
+答案：
+curl -vo /dev/null http://URL
+wget -SO /dev/null http://URL
+curl -I http://URL
+wget -S http://URL
+curl -v http://URL
+类似参数都算对
+PS ：URL 就是客户的域名
+
+4、http 状态码中的 206、302、400、404、502、504 都有什么区别
+
+答案：
+
+206
+服务器已经成功处理了部分 GET 请求。类似于 FlashGet 或者迅雷这类的 HTTP 下载工具都是使用此类响应实现断点 
+续传或者将一个大文档分解为多个下载段同时下载。
+　　该请求必须包含 Range 头信息来指示客户端希望得到的内容范围，并且可能包含 If-Range 来作为请求条件。
+　　响应必须包含如下的头部域：
+　　Content-Range 用以指示本次响应中返回的内容的范围；如果是 Content-Type 为 multipart/byteranges 的多段
+下载，则每一 multipart 段中都应包含 Content-Range 域用以指示本段的内容范围。假如响应中包含 Content-Length
+，那么它的数值必须匹配它返回的内容范围的真实字节数。
+　　Date
+　　ETag 和/或 Content-Location，假如同样的请求本应该返回200响应。
+　　Expires, Cache-Control，和/或 Vary，假如其值可能与之前相同变量的其他响应对应的值不同的话。
+　　假如本响应请求使用了 If-Range 强缓存验证，那么本次响应不应该包含其他实体头；假如本响应的请求使用了 If- 
+Range 弱缓存验证，那么本次响应禁止包含其他实体头；这避免了缓存的实体内容和更新了的实体头信息之间的不一致。 
+否则，本响应就应当包含所有本应该返回200响应中应当返回的所有实体头部域。
+　　假如 ETag 或 Last-Modified 头部不能精确匹配的话，则客户端缓存应禁止将206响应返回的内容与之前任何缓存过 
+的内容组合在一起。
+　　任何不支持 Range 以及 Content-Range 头的缓存都禁止缓存206响应返回的内容。
+
+302
+请求的资源现在临时从不同的 URI 响应请求。由于这样的重定向是临时的，客户端应当继续向原有地址发送以后的请 
+求。只有在Cache-Control或Expires中进行了指定的情况下，这个响应才是可缓存的。
+　　新的临时性的 URI 应当在响应的 Location 域中返回。除非这是一个 HEAD 请求，否则响应的实体中应当包含指向新
+的 URI 的超链接及简短说明。
+　　如果这不是一个 GET 或者 HEAD 请求，那么浏览器禁止自动进行重定向，除非得到用户的确认，因为请求的条件可能 
+因此发生变化。
+　　注意：虽然RFC 1945和RFC 2068规范不允许客户端在重定向时改变请求的方法，但是很多现存的浏览器将302响应 
+视作为303响应，并且使用 GET 方式访问在 Location 中规定的 URI，而无视原先请求的方法。状态码303和307被添加 
+了进来，用以明确服务器期待客户端进行何种反应。
+
+
+400
+　　1、语义有误，当前请求无法被服务器理解。除非进行修改，否则客户端不应该重复提交这个请求。
+　　2、请求参数有误。
+
+404
+　　请求失败，请求所希望得到的资源未被在服务器上发现。没有信息能够告诉用户这个状况到底是暂时的还是永久的。假
+如服务器知道情况的话，应当使用410状态码来告知旧资源因为某些内部的配置机制问题，已经永久的不可用，而且没有任
+何可以跳转的地址。404这个状态码被广泛应用于当服务器不想揭示到底为何请求被拒绝或者没有其他适合的响应可用的情
+况下。
+
+502
+　　作为网关或者代理工作的服务器尝试执行请求时，从上游服务器接收到无效的响应。
+
+504
+　　作为网关或者代理工作的服务器尝试执行请求时，未能及时从上游服务器（URI标识出的服务器，例如HTTP、FTP、 
+LDAP）或者辅助服务器（例如DNS）收到响应。
+　　注意：某些代理服务器在DNS查询超时时会返回400或者500错误
+
+5、nginx 中如何匹配一个 *.html 的资源
+
+答案：
+类似以下答案都可以
+location ~ \.html$ {
+    ...
+}
+
+location ~ *.html$ {
+    ...
+}
+
+location ^~ *.html$ {
+    ...
+}
+
+location ~= *.html$ {
+    ...
+}
+
+location ^ *.html$ {
+    ...
+}
+
+6、客户端的 DNS 缓存时间是通过什么决定
+
+TTL （缓存生命周期）
+
+7、http 响应头中 access-control-allow-origin、cache-control、content-type 这些头都是什么含义
+
+答案：
+access-control-allow-origin：允许跨域的有哪些
+cache-control：客户请求的文件在服务端缓存的时间
+content-type：客户请求的文件媒体类型
+
+8、kill -9和kill -15有什么区别？
+
+答案：
+kill -15代表的信号为SIGTERM，这是告诉进程你需要被关闭，请自行停止运行并退出；
+
+而kill -9代表的信号是SIGKILL，表示进程被终止，需要立即退出；
+
+
+9、常用的抓包工具有哪些？
+答案：说出任意一种即可，linux 下的必须会
+windows 下有
+Charles
+Wireshark
+fiddler
+
+linux 下有
+tcpdump
+thsark
+
+10、linux 常用的网络测试命令有哪些？
+
+答案：
+linux 下有（多说更好）
+
+tcpping
+httping
+ping
+mtr
+tracert
+traceroute
+iftop
+========================================================================================================================
+CDN 筛选关键词
+
+nginx 、squid、CDN 、视频直播 、ffmpeg ffplay、TCP 报文、http 协议
+Ansiable 、DNS 、curl、wget、CDN 配置、CDN 加速、CDN 技术支持、CDN 售前、CDN 售后、CDN 运维、vim、cache
+
+
+
+
+1)日志中的 undefined 字段是什么含义；
+2)卡顿资源有从腾讯拉流，这部分卡顿值是否可以去掉
+3）cip 客户 sip cdn
+4）
+
+
+
+节点
+数量
+占比
+cn1410	14	77.78%
+cn614	2	11.11%
+cn1246	1	5.56%
+cn969	1	5.56%
+
+
+GET /vod/nf_42_live/5612_20579/0.ts HTTP/1.1
+User-Agent: Wget/1.20.3 (linux-android)
+Accept: */*
+Accept-Encoding: identity
+Host: vlivevod1.nfapp.southcn.com
+Connection: Keep-Alive
+
+HTTP/1.1 200 OK
+Server: Tengine
+Content-Type: video/mp2t
+Content-Length: 295160
+Connection: keep-alive
+Date: Wed, 13 Nov 2019 02:56:35 GMT
+Last-Modified: Sat, 26 Oct 2019 12:01:55 GMT
+ETag: "5db435b3-480f8"
+Accept-Ranges: bytes
+Via: cache16.l2cn1828[212,304-0,H], cache27.l2cn1828[213,0], vcache8.cn629[0,200-0,H], vcache8.cn629[1,0]
+Ali-Swift-Global-Savetime: 1572098610
+Age: 2451
+X-Cache: HIT TCP_MEM_HIT dirn:12:143861145
+X-Swift-SaveTime: Wed, 13 Nov 2019 02:56:36 GMT
+X-Swift-CacheTime: 3600
+Access-Control-Allow-Methods: GET,POST
+Access-Control-Allow-Origin: *
+Timing-Allow-Origin: *
+EagleId: b702c7d015736162463593741e
