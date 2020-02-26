@@ -1,7 +1,5 @@
 #!/usr/bin/env python
 #coding=utf-8
-
-#update: 2020-02-25
 # __author__ = 'hanli.zyb'
 
 '''Check Package'''
@@ -144,7 +142,6 @@ class Refresh(object):
       if types == 'clear':
         taskID = 'RefreshTaskId'
         request = RefreshObjectCachesRequest()
-<<<<<<< HEAD
         if self.param.has_key('-o'):
           request.set_ObjectType(self.param['-o'])
       elif types == 'push':
@@ -152,11 +149,6 @@ class Refresh(object):
         request = PushObjectCacheRequest()
         if self.param.has_key('-a'):
           request.set_Area(self.param['-a'])
-=======
-      elif types == 'push':
-        taskID = 'PushTaskId'
-        request = PushObjectCacheRequest()
->>>>>>> 0d344a9babcf0d9e95008da72b260f5f41445649
 
       taskreq = DescribeRefreshTasksRequest()
       request.set_accept_format('json')
@@ -186,7 +178,6 @@ class Refresh(object):
   '''
   def helps(self):
     print("\nscript options explain: \
-<<<<<<< HEAD
             \n\t -i <AccessKey>                  访问阿里云凭证，访问控制台上可以获得； \
             \n\t -k <AccessKeySecret>            访问阿里云秘钥，访问控制台上可以获得； \
             \n\t -r <filename>                   文件名称，每行一条 URL，有特殊字符先做 URLencode，以 http/https 开头； \
@@ -198,17 +189,8 @@ class Refresh(object):
             \n\t -o [String,<File|Directory>]    可选项，刷新的类型； \
             \n\t    File                         文件刷新（默认值）； \
             \n\t    Directory                    目录刷新")
-=======
-            \n\t -i <AccessKey>       访问阿里云凭证，访问控制台上可以获得； \
-            \n\t -k <AccessKeySecret> 访问阿里云秘钥，访问控制台上可以获得； \
-            \n\t -r <filename>        文件名称，每行一条 URL，有特殊字符先做 URLencode，以 http/https 开头； \
-            \n\t -t <taskType>        任务类型 clear 刷新，push 预热； \
-            \n\t -n [nums,[..100]]    可选项，每次操作文件数量，做多 100 条；")
-
->>>>>>> 0d344a9babcf0d9e95008da72b260f5f41445649
 #TODO 入口
 
 if __name__ == '__main__':
   fun = Refresh()
   fun.main(sys.argv[1:])
-
