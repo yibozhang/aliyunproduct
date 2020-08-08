@@ -8,16 +8,19 @@ from aliyun.log import *
 from aliyun.log.util import base64_encodestring
 from random import randint
 
+# variable
+
 flag=0
 stime=int(time.time()) - 43200
 etime=int(time.time())
-cdnsky="cdnskyeye.alibaba-inc.com"
+cdnsky=""
 http = urllib3.PoolManager()
 allStrategyID={}
 strategyResult=[]
 
 
-# corotine 协程 
+# corotine 
+
 @asyncio.coroutine
 def hello(host):
 
@@ -30,7 +33,7 @@ def hello(host):
  queryResult(allStrategyID)
 
 
-# 捞起实例子ID 
+# get cdnskys liveStreamlimit instance id 
 
 def printd(host):
  url="http://cdnskyeye.alibaba-inc.com/api/lualib/diagnose.diagnose/start_diagnose?strategy_id=247&author=%E9%9F%A9%E7%AC%A0&LiveDomain=" + host + f"&StartTime={stime}&EndTime={etime}"
@@ -43,7 +46,7 @@ def printd(host):
   print(e)
 
 
-# 循环分析诊断结果
+# query assert result
 
 def queryResult(id):
  print("[DebugLength]->",len(id))
@@ -63,7 +66,7 @@ def queryResult(id):
    logTail(strategyResult)
    break 
 
-# 写入 SLS  log
+# wirte sls log
 
 def logTail(result):
  print("[Debug LogTail]->",len(result))
