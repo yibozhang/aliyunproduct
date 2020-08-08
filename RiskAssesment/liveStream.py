@@ -68,10 +68,10 @@ def queryResult(id):
 def logTail(result):
  print("[Debug LogTail]->",len(result))
  endpoint = "cn-zhangjiakou.log.aliyuncs.com"
- accessKeyId = "LTAI4GDkNfUA8rBGRmzCUS9w"
- accessKey = "OPOOM7q6Yfe9wDrpN4TAhhjjgVAIFa"
- logstore = "livestream"
- project = "v-cloud-data"
+ accessKeyId = ""
+ accessKey = ""
+ logstore = ""
+ project = ""
  client = LogClient(endpoint, accessKeyId, accessKey)
  topic = '直播业务'
  source = ''
