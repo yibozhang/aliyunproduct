@@ -36,7 +36,7 @@ def hello(host):
 # get cdnskys liveStreamlimit instance id 
 
 def printd(host):
- url="http://cdnskyeye.alibaba-inc.com/api/lualib/diagnose.diagnose/start_diagnose?strategy_id=247&author=%E9%9F%A9%E7%AC%A0&LiveDomain=" + host + f"&StartTime={stime}&EndTime={etime}"
+ url=""
  resp = http.request('GET',url)
  try:
   if resp.data: 
@@ -55,7 +55,7 @@ def queryResult(id):
   exit()
  while True:
   for key in list(id.keys()):
-   url = f"http://cdnskyeye.alibaba-inc.com/api/lualib/diagnose.diagnose/diagnose_instance?instance_id={id[key]}"
+   url = f""
    resp = http.request('GET',url)
    if resp.data:
     msg = json.loads(resp.data.decode())
