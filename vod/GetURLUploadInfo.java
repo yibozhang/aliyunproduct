@@ -15,8 +15,8 @@ import java.util.logging.Logger;
 
 
 public class GetURLUploadInfo {
-    private static String access_key_id = "LTAIKtTomh470YPB";
-    private static String access_key_secret = "pk1Dxc5r3diZiaH8iQnMJ8U0lRFF6j";
+    private static String access_key_id = "";
+    private static String access_key_secret = "";
     private final static String VOD_DOMAIN = "http://vod.cn-shanghai.aliyuncs.com";
     private final static String ISO8601_DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss'Z'";
     private final static String HTTP_METHOD = "GET";
