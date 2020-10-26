@@ -1,0 +1,49 @@
+#!/bin/bash
+# 分析阿里云 ECS 出现内存占用过高原因
+# author：hanli
+
+function freem(){
+  echo -e "\033[32m---- free 系统内存使用详情 ----\033[0m"
+  which free && free -m || return 1
+}
+
+function topfree(){
+  echo -e "\033[32m---- top  系统内存使用详情 ----\033[0m"
+  which top && top -d 1 -n 1 -o %MEM | grep PID -A 10 || return 1
+  TPID=`top -d 1 -n 1 -o %MEM | grep PID -A 10 | awk 'NR==2{print $2}'`
+}
+
+function psfree(){
+  echo -e "\033[32m---- PS   进程内存使用详情 ----\033[0m"
+  which ps && ps auxw --sort=-rss | head -n 10  || return 1
+  PSPID=`ps auxw --sort=-rss | awk 'NR==2{print $2}'`
+}
+
+function Judage(){
+  if [[ $TPID == $PSPID ]]; then
+    echo -e "\033[32m---- PID $PSPID 占用内容较高----\033[0m"
+  fi
+}
+
+function meminfo(){
+
+  echo -e "\033[32m---- 内存分配详情 ----\033[0m"
+
+  total=$(grep MemTotal /proc/meminfo|awk '{print $2}')
+  while read line
+  do
+    #echo "1 2 3" | { read a b c;echo $a; }
+    flag=$(echo $line | egrep -vi "mem*|Vmallo*" | awk '$2!=0{print}' | awk '{print $1}')
+    value=$(echo "$line" | egrep -vi "mem*|Vmallo*" |awk '$2!=0{print}' | awk '{print $2}')
+    if [[ "$value" -ne "" ]]; then
+      precent=$(echo "scale=2; $value / $total * 100" | bc)
+      echo -e "$flag \t内存占比 $precent %"
+    fi
+  done < /proc/meminfo
+}
+
+if  freem && topfree && psfree ; then
+  Judage && meminfo
+else
+  echo -e "\033[31m检查 TOP\\PS\\FREE 命令是否正常安装\033[0m"
+fi
