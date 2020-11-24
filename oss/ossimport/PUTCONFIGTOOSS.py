@@ -4,8 +4,8 @@ import oss2
 class PUTCONFIGTOOSS(object):
 
   def __init__(self,DEST,STORESIZE):
-    self.AK = 'LTAI5rMS6uhM2GNk'
-    self.SK = '9K9T4gKDDPuet2LCp75pD0J83Shb6L'
+    self.AK = ''
+    self.SK = ''
     self.ENDPOINT = 'http://oss-cn-hangzhou.aliyuncs.com'
     self.BUCKET = 'ali-hangzhou'
     self.DEST = DEST
