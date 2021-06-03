@@ -1,0 +1,291 @@
+#!/usr/bin/env python3
+# coding=utf-8
+# __author__ = 'hanli.zyb'
+# __date__ = '2021-04-23'
+
+'''Check Package'''
+
+try:
+    import os, re, sys, getopt, time, json, logging
+    from aliyunsdkcore.client import AcsClient
+    from aliyunsdkcore.acs_exception.exceptions import ClientException
+    from aliyunsdkcore.acs_exception.exceptions import ServerException
+    from aliyunsdkcdn.request.v20180510.RefreshObjectCachesRequest import RefreshObjectCachesRequest
+    from aliyunsdkcdn.request.v20180510.PushObjectCacheRequest import PushObjectCacheRequest
+    from aliyunsdkcdn.request.v20180510.DescribeRefreshTasksRequest import DescribeRefreshTasksRequest
+    from aliyunsdkcdn.request.v20180510.DescribeRefreshQuotaRequest import DescribeRefreshQuotaRequest
+except:
+    sys.exit("[error] Please pip install aliyun-python-sdk-cdn and aliyun-python-sdk-core and logging，please install now......")
+
+class Envariable(object):
+    REGION = 'cn-hangzhou'
+    task_list = []
+    task_cli = None
+    task_ak = None
+    task_sk = None
+    task_file = None
+    task_type = None
+    task_area = None
+    task_otype = None
+    task_fail_id = []
+    task_success_id = []
+
+    def set_task_file(task_file):
+        Envariable.task_file = task_file
+
+    def get_task_file():
+        return Envariable.task_file
+
+    def set_task_ak(task_ak):
+        Envariable.task_ak = task_ak
+
+    def get_task_ak():
+        return Envariable.task_ak
+
+    def set_task_sk(task_sk):
+        Envariable.task_sk = task_sk
+
+    def get_task_sk():
+        return Envariable.task_sk
+
+    def set_task_type(task_type):
+        Envariable.task_type = task_type
+
+    def get_task_type():
+        return Envariable.task_type
+
+    def set_task_area(task_area):
+        Envariable.task_area = task_area
+
+    def get_task_area():
+        return Envariable.task_area
+
+    def set_task_otype(task_otype):
+        Envariable.task_otype = task_otype
+
+    def get_task_otype():
+        return Envariable.task_otype
+
+    def set_acs_client(task_cli):
+        Envariable.task_cli = task_cli
+
+    def get_acs_client():
+        return Envariable.task_cli
+
+    def set_fail_taskid(taskid):
+        Envariable.task_fail_id.append(taskid)
+
+    def get_fail_taskid():
+        return Envariable.task_fail_id
+
+    def set_success_taskid(taskid):
+        Envariable.task_success_id.append(taskid)
+
+    def get_success_taskid():
+        return Envariable.task_success_id
+
+class BaseCheck(object):
+
+    def __init__(self):
+        self.invalidurl = ''
+        self.lines = 0
+
+    def printQuota(self):
+        try:
+            if not Envariable.get_acs_client():
+                client = AcsClient(Envariable.get_task_ak(), Envariable.get_task_sk(), Envariable.REGION)
+                Envariable.set_acs_client(client)
+            quotas = DescribeRefreshQuotaRequest()
+            quotaResp = json.loads(Envariable.get_acs_client().do_action_with_exception(quotas))
+        except Exception as e:
+            logging.info(e)
+            return None,str(e)
+        if Envariable.get_task_type():
+            if Envariable.get_task_type() == 'push':
+                if self.lines > int(quotaResp['PreloadRemain']):
+                    return None,"PreloadRemain is not enough {0}".format(quotaResp['PreloadRemain'])
+                return True,None
+            if Envariable.get_task_type() == 'clear':
+                if Envariable.get_task_otype() == 'File' and self.lines > int(quotaResp['UrlRemain']):
+                    return None,"UrlRemain is not enough {0}".format(quotaResp['UrlRemain'])
+                elif Envariable.get_task_otype() == 'Directory' and self.lines > int(quotaResp['DirRemain']):
+                    return None,"DirRemain is not enough {0}".format(quotaResp['DirRemain'])
+                else:
+                    return True,None
+        else:
+            return None,"缺少刷新类型"
+
+    def urlFormat(self):
+        try:
+            with open(Envariable.get_task_file(), "r") as f:
+                for line in f.readlines():
+                    self.lines += 1
+                    if not re.match(r'^((https)|(http))',line):
+                        self.invalidurl = line + '\n' + self.invalidurl
+                if self.invalidurl != '':
+                    return None,"URL format is illegal {0}".format(self.invalidurl)
+                return True,None
+        except Exception as e:
+            logging.info(e)
+            return None,"URL 检查失败"
+
+class doTask(object):
+
+    def urlencode_pl(inputs_str):
+        len_str = len(inputs_str)
+        if str == "" or len_str <= 0:
+            return ""
+        index_j = 0
+        index_i = 0
+        result_end = ""
+        for index_i in range(0, len_str):
+            index_sb = index_i + 1
+            chs = inputs_str[index_i:index_sb]
+            if (chs >= 'A' and chs <= 'Z') or (chs >= 'a' and chs <= 'z') or (chs >= '0' and chs <= '9') or (
+                    chs == ":") or (chs == "/"):
+                if result_end == "":
+                    result_end = chs
+                else:
+                    result_end += chs
+            elif chs == ' ':
+                result_end += '+'
+            elif chs == '.' or chs == '-' or chs == '_' or chs == '*':
+                result_end += chs
+            else:
+                result_end = '%s%%%02X' % (result_end, ord(chs))
+
+        return result_end
+
+    def doProd(self):
+        gop = 100
+        mins = 1
+        maxs = gop
+        with open(Envariable.get_task_file(), "r") as f:
+            for line in f.readlines():
+                if mins != maxs:
+                    line = line.strip("\n") + "\n"
+                else:
+                    line = line.strip("\n")
+                line = line.strip()
+                line = doTask.urlencode_pl(line) + "\n"
+                Envariable.task_list.append(line)
+                if mins >= maxs:
+                    yield Envariable.task_list
+                    mins = maxs
+                    maxs = gop + maxs - 1
+                else:
+                    mins += 1
+            if len(Envariable.task_list) > 0: yield Envariable.task_list
+
+    def doRefresh(lists):
+        try:
+            if Envariable.get_acs_client():
+                client = Envariable.get_acs_client()
+            else:
+                Envariable.set_acs_client()
+                client = Envariable.get_acs_client()
+
+            if Envariable.get_task_type() == 'clear':
+                taskID = 'RefreshTaskId'
+                request = RefreshObjectCachesRequest()
+                if Envariable.get_task_otype():
+                    request.set_ObjectType(Envariable.get_task_otype())
+            elif Envariable.get_task_type() == 'push':
+                taskID = 'PushTaskId'
+                request = PushObjectCacheRequest()
+                if Envariable.get_task_area():
+                    request.set_Area(Envariable.get_task_area())
+            else:
+                return "刷新预热选择错误"
+
+            taskreq = DescribeRefreshTasksRequest()
+            request.set_accept_format('json')
+            request.set_ObjectPath(lists)
+            response = json.loads(client.do_action_with_exception(request))
+            logging.info(response)
+            timeout = 0
+            while True:
+                count = 0
+                taskreq.set_accept_format('json')
+                taskreq.set_TaskId(int(response[taskID]))
+                taskresp = json.loads(client.do_action_with_exception(taskreq))
+                logging.info("[" + response[taskID] + "]" + "is doing... ...")
+                for t in taskresp['Tasks']['CDNTask']:
+                    if t['Status'] != 'Complete':
+                        count += 1
+                if count == 0:
+                    Envariable.set_success_taskid(response[taskID])
+                    logging.info("[" + response[taskID] + "]" + "is finish")
+                    break
+                elif timeout >= 5:
+                    Envariable.set_fail_taskid(response[taskID])
+                    logging.info("[" + response[taskID] + "]" + "timeout")
+                    break
+                else:
+                    timeout += 1
+                    time.sleep(5)
+                    continue
+        except Exception as e:
+            logging.info(e)
+            return str(e)
+
+class checkParams(object):
+
+    @staticmethod
+    def checking(params):
+        try:
+            for keys in params:
+                if keys == 'RefreshOrPreheat' and params[keys]:
+                    Envariable.set_task_type(params[keys])
+                elif keys == 'Area' and params[keys]:
+                    Envariable.set_task_area(params[keys])
+                elif keys == 'ObjectType' and params[keys]:
+                    Envariable.set_task_otype(params[keys])
+                elif keys == 'accessKeyId' and params[keys]:
+                    Envariable.set_task_ak(params[keys])
+                elif keys == 'accessSecret' and params[keys]:
+                    Envariable.set_task_sk(params[keys])
+                elif keys == 'file' and params[keys]:
+                    Envariable.set_task_file(params[keys])
+                else:
+                    return None,"参数 {0} 检查错误".format(keys)
+            return True,None
+        except Exception as e:
+            return None,str(e)
+
+class RefreshCDN(object):
+
+    @staticmethod
+    def main(url_param):
+        logging.info(url_param)
+        check_resp,cms = checkParams().checking(url_param)
+        if not check_resp:
+            return None,cms
+
+        handler = BaseCheck()
+        quota_resp,msg = handler.printQuota()
+        if not quota_resp:
+            return None,msg
+
+        url_resp,ums = handler.urlFormat()
+        if not url_resp:
+            return None,ums
+
+        for g in doTask.doProd(Envariable.get_task_file()):
+            Envariable.task_list = []
+            ref_resp = doTask.doRefresh(''.join(g))
+            if isinstance(ref_resp,str):
+                return None,ref_resp
+            time.sleep(1)
+        logging.info("失败任务: {0} 成功任务 {1}".format(len(Envariable.get_fail_taskid()),len(Envariable.get_success_taskid())))
+        if len(Envariable.get_fail_taskid()) < 1 and len(Envariable.get_success_taskid()) >= 1:
+            return True,{"task_success_id": Envariable.get_success_taskid()}
+        elif len(Envariable.get_fail_taskid()) >= 1 and len(Envariable.get_success_taskid()) >= 1:
+            combains = {}
+            combains['task_fail_id'] = Envariable.get_fail_taskid()
+            combains['task_success_id'] = Envariable.get_success_taskid()
+            return True,combains
+        elif len(Envariable.get_fail_taskid()) >= 1 and len(Envariable.get_success_taskid()) < 1:
+            return True,{"task_fail_id": Envariable.get_fail_taskid()}
+        else:
+            return None,"unkonw error"
