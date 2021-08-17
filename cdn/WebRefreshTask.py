@@ -151,7 +151,7 @@ class UploadFileHandler(tornado.web.RequestHandler):
                 url_file = self.request.files['file'][0]
                 if url_file:
                     timestamp = str(int(round(time.time() * 1000)))
-                    file_name = "/home/admin/hanli.zyb/" + timestamp + '_' + url_file['filename']
+                    file_name = "/mnt/logs/" + timestamp + '_' + url_file['filename']
                     save_file = open(file_name, "w")
                     save_file.write(str(url_file['body'], encoding='utf8'))
                     save_file.close()
@@ -213,6 +213,6 @@ def make_app():
 if __name__ == "__main__":
     app = make_app()
 
-    app.listen(8000)
+    app.listen(80)
 
     tornado.ioloop.IOLoop.current().start()

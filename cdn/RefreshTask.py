@@ -25,7 +25,7 @@ try:
     from aliyunsdkcdn.request.v20180510.DescribeRefreshQuotaRequest import DescribeRefreshQuotaRequest
 except:
     sys.exit("[error] Please pip install aliyun-python-sdk-cdn and aliyun-python-sdk-core and logging，please install now......")
-logging.basicConfig(level=logging.DEBUG, filename='/home/admin/hanli.zyb/RefreshAndPredload.log')
+logging.basicConfig(level=logging.DEBUG, filename='/mnt/logs/RefreshAndPredload.log')
 
 class Envariable(object):
     REGION = 'cn-hangzhou'
