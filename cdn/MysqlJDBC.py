@@ -13,10 +13,10 @@ import time
 
 class MysqlJDBC(object):
 
-    AUTH_KEY = {"host": "rm-bp1140o52u909064a9o.mysql.rds.aliyuncs.com",
+    AUTH_KEY = {"host": "rm-bo.mysql.rds.aliyuncs.com",
                 "user": "hanli",
-                "password": "ZYB307ji",
-                "database": "testhanli"}
+                "password": "",
+                "database": ""}
 
     # TODO Insert Doing task
     @staticmethod
