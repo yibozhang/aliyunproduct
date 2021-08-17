@@ -14,7 +14,7 @@
 '''Check Package'''
 
 try:
-    import os, re, sys, getopt, time, json, logging, subprocess
+    import os, re, sys, getopt, time, json, logging, subprocess, urllib3
     from MysqlJDBC import *
     from aliyunsdkcore.client import AcsClient
     from aliyunsdkcore.acs_exception.exceptions import ClientException
@@ -220,6 +220,7 @@ class doTask(object):
             else:
                 Envariable.task_fail_id.append(str(e))
 
+
 class Check_Params(object):
 
     @staticmethod
@@ -238,12 +239,34 @@ class Check_Params(object):
                 if keys == 'accessSecret' and params[keys]:
                     Envariable.set_task_sk(params[keys])
                 if keys == 'file' and params[keys]:
-                    Envariable.set_task_file(params[keys])
+                    file_path = Check_Params.Wget_oss_local(params)
+                    if not file_path: return
+                    Envariable.set_task_file(file_path)
                 if keys == 'task_id' and params[keys]:
                     Envariable.set_task_id(params[keys])
             return True
         except Exception as e:
-            logging.info('{"Error": "Check Params Func {}"}'.format(e))
+            logging.info('[Checking] Function %s',str(e))
+            return
+    
+    @staticmethod
+    def Wget_oss_local(params):
+
+        try:
+            timestamp = str(int(round(time.time() * 1000)))
+            file_name = "/mnt/logs/" + timestamp + '_' + params['accessKeyId']
+            http = urllib3.PoolManager()  
+            from_resp_sky = http.request("GET",params['file'])#'http://hanli-shenzhen.oss-cn-shenzhen.aliyuncs.com/urllist2.txt?Expires=1629263751&OSSAccessKeyId=LTAI4G4C27SoHwSQJ58Vezb9&Signature=DA2rT5lYyvyvPtbwZ0PsjtPjQpE%3D')
+            if from_resp_sky.status == 200:
+                with open(file_name,'w+') as fd:
+                    fd.write(str(from_resp_sky.data,encoding='utf-8'))
+                    fd.close()
+                return file_name
+            else:
+                MysqlJDBC.UPDATE_FAIL_STATUS("Wget from OSS to loacl failed",params['task_id'])
+                return
+        except Exception as e:
+            logging.info("[Wget_oss_local] %s",str(e))
             return
 
 class RefreshTask(object):
