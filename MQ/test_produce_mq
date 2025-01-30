@@ -9,7 +9,7 @@ from pika.exchange_type import ExchangeType
 print('pika version: %s' % pika.__version__)
 
 connection = pika.BlockingConnection(
-    pika.ConnectionParameters(host='amqp-cn-2r42a2eku009.mq-amqp.cn-hangzhou-249959-a.aliyuncs.com',credentials=pika.PlainCredentials('MjphbXFwLWNuLTJyNDJhMmVrdTAwOTpMVEFJNEc0QzI3U29Id1NRSjU4VmV6Yjk=', 'Qjc2QjFEMjU4OTc4Q0Q1RUQ2MTQ3NEU2RkEzQjU5ODc0ODhDMjkzQjoxNjI3MzQ5NTUwNDk4'),virtual_host='v1'))
+    pika.ConnectionParameters(host='amqp-cn-2r42a2eku009.mq-amqp.cn-hangzhou-249959-a.aliyuncs.com',credentials=pika.PlainCredentials('MjphbXFwLWNuLTJ3U29Id1NRSjU4VmV6Yjk=', 'Qjc2QjFEMjU4OTc4Q0Q1RUQ2MTQ3NEU2RkEzQjU5ODc0ODhDMjkzQjoxNjI3MzQ5NTUwNDk4'),virtual_host='v1'))
 main_channel = connection.channel()
 
 main_channel.exchange_declare(exchange='testtopic', exchange_type=ExchangeType.topic)
