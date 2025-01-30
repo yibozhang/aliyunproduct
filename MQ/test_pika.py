@@ -3,7 +3,7 @@ import pika
 
 config = pika.ConnectionParameters(
     host='amqp-cn-2r42a2eku009.mq-amqp.cn-hangzhou-249959-a.aliyuncs.com',
-    credentials=pika.PlainCredentials('amqp-cn-2r42a2eku009', 'Qjc2QjFEMjU4OTc4Q0Q1RUQ2MTQ3NEU2RkEzQjU5ODc0ODhDMjkzQjoxNjI3MzQ5NTUwNDk4'),
+    credentials=pika.PlainCredentials('amqp-cn-2r42a2eku009', 'Qjc2QjFEMjU4OTc4Q0Q1RjoxNjI3MzQ5NTUwNDk4'),
 )
 
 conn = pika.BlockingConnection(config)
